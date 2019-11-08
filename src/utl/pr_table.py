@@ -2,22 +2,22 @@ import bot_helper.resources.spreadsheet as spreadsheet
 from typing import List, Tuple
 
 
-class PowerTable(spreadsheet.Spreadsheet):
+class PRTable(spreadsheet.Spreadsheet):
     """
-    Modifications to the Sheets Spreadsheet to include God Emperor Specific functionality
+    Modifications to the Sheets Spreadsheet to include WTS Specific functionality
     """
 
     def __init__(self, *kwargs):
 
         super().__init__(*kwargs)
         self.next_row = self.find_empty_cell_in_column(
-            'PowerLog', 'C', '3')
+            'PRLog', 'C', '3')
 
     def get_scores(self) -> List[str]:
         """
-        Gets the list of scores in alphabetical order by house
+        Gets the list of scores in alphabetical order by country
         """
-        return self.read_column('CurrentPower', 'B', '3', '11')
+        return self.read_column('CurrentPR/C', 'B', '2', '12')
 
     def write_display(self) -> None:
         """
@@ -34,20 +34,20 @@ class PowerTable(spreadsheet.Spreadsheet):
         result = []
         for score in scores:
             result.append(convert_score(score))
-        self.write_column('DisplayPower', 'C', '3', '11', result)
+        self.write_column('DisplayPR', 'C', '4', '14', result)
 
-    def write_entry(self, house, score, author, time) -> str:
+    def write_entry(self, country, score, author, time) -> str:
         """
-        Writes the associated row in the Power table for a Power change
+        Writes the associated row in the PR table for a PR change
         """
         self.next_row = self.find_empty_cell_in_column(
-            'PowerLog', 'C', '3')
+            'PRLog', 'C', '3')
         time = self._convert_time(time)
-        data = [time, house, score, author]
+        data = [time, country, score, author]
         self.write_row(
-            'PowerLog', 'B', 'E', str(self.next_row), data)
+            'PRLog', 'B', 'E', str(self.next_row), data)
         self.next_row += 1
-        return '{0} gets {1} power from {2}\n'.format(house, score, author)
+        return '{0} gets {1} PR from {2}\n'.format(country, score, author)
 
     @staticmethod
     def _convert_time(time: str) -> str:

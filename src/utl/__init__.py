@@ -1,2 +1,1 @@
-from utl.power_table import PowerTable
-from utl.marriage_handler import MarriageHandler
+from utl.pr_table import PRTable

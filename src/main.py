@@ -3,9 +3,8 @@ import sys
 sys.path.append('lib/')
 
 import bot_helper.bot.client as client
-import utl.power_table as power_table
-import utl.powerkeeper as powerkeeper
-import utl.marriage_handler as marriage_handler
+import utl.pr_table as pr_table
+import utl.prkeeper as prkeeper
 import signal
 import sys
 
@@ -26,10 +25,8 @@ def score_callback(msg, keeper):
     response = ''
 
     # Check if this is a kill command
-    if str(msg.channel) == 'logistics':
-        response += keeper.check_player_deaths(message, author, time)
-        # Don't add score based on the house of those that died.
-        if response == '' and '!' not in message:
+    if str(msg.channel) == 'human':
+        if '!' not in message:
             response += keeper.process_score_message(
                 message, author, time)
 
@@ -48,20 +45,14 @@ secret_input.close()
 client = client.Client()
 
 # Make Spreadsheet
-sheet = power_table.PowerTable(
+sheet = pr_table.PRTable(
     keys['sheet_id'], 'data/token.json', 'data/credentials.json')
 
 # Create Score Keeper
-keeper = powerkeeper.get_inst(sheet)
+keeper = prkeeper.get_inst(sheet)
 
 # Register Score Keeping Callback
 client.register_on_message_callback(score_callback, [keeper])
-
-# Create Marriage Handler
-marriage_fun, marriage_args = marriage_handler.get_callback_function(
-    keeper.houses, keeper.spreadsheet)
-client.register_on_message_callback(marriage_fun, marriage_args)
-keeper.register_marriage_handler(marriage_args[0])
 
 # Start Client
 client.run(keys['discord_token'])
