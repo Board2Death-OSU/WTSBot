@@ -19,6 +19,12 @@ class PRTable(spreadsheet.Spreadsheet):
         """
         return self.read_column('CurrentPR/C', 'B', '2', '12')
 
+    def get_capitol(self) -> List[str]:
+        """
+        Gets the list of capitol in alphabetical order by country
+        """
+        return self.read_column('CurrentPR/C', 'C', '2', '12')
+
     def write_display(self) -> None:
         """
         Writes current scores to the display page, with an x in the ones place
@@ -59,7 +65,7 @@ class PRTable(spreadsheet.Spreadsheet):
         hours = time[:2]
         minutes = time[2:]
         hours = int(hours)
-        hours -= 4
+        hours -= 5
         if hours > 12:
             hours -= 12
         if hours <= 0:

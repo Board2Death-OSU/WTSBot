@@ -3,6 +3,7 @@ import sys
 sys.path.append('lib/')
 
 import bot_helper.bot.client as client
+import bot_helper.resources.image_handler as image_handler
 import utl.pr_table as pr_table
 import utl.prkeeper as prkeeper
 import signal
@@ -33,6 +34,9 @@ def score_callback(msg, keeper):
     # Check if a score table was requested.
     if '!SCORE' in message:
         response += keeper.display_scores()
+
+    if '!CAPITOL' in message:
+        response += keeper.display_capitol()
     return response, channel
 
 
@@ -53,6 +57,15 @@ keeper = prkeeper.get_inst(sheet)
 
 # Register Score Keeping Callback
 client.register_on_message_callback(score_callback, [keeper])
+
+cat_images = image_handler.ImageHandler.get_files('data/img/cat')
+cat_handler = image_handler.ImageHandler(
+    cat_images, "cat", "off-topic")
+client.register_on_message_send_file_callback(cat_handler.get_call_back(), [])
+
+dog_images = image_handler.ImageHandler.get_files('data/img/dog')
+dog_handler = image_handler.ImageHandler(dog_images, "dog", "off-topic")
+client.register_on_message_send_file_callback(dog_handler.get_call_back(), [])
 
 # Start Client
 client.run(keys['discord_token'])

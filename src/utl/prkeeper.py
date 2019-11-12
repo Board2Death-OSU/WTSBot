@@ -43,15 +43,20 @@ class PRKeeper:
         if(match is not None):
             score_change = match.group()
 
+        def calc_score(new_score):
+            return min(max(new_score, 0), 10)
+
         # Loop over Countries marked, and make the changes
         response = ''
         if score_change is not None and len(countries) > 0:
             for country in countries:
                 if country == 'ALL':
                     for val in self.scores.keys():
-                        self.scores[val] += int(score_change)
+                        self.scores[val] = calc_score(
+                            self.scores[val] + int(score_change))
                 else:
-                    self.scores[country] += int(score_change)
+                    self.scores[country] = calc_score(
+                        self.scores[country] + int(score_change))
                 response += self.spreadsheet.write_entry(
                     country, score_change, author, time)
         self.spreadsheet.write_display()
@@ -82,6 +87,16 @@ class PRKeeper:
         Constructs a display for the scores of each country with there scores
         """
         scores = self.spreadsheet.get_scores()
+        response = ''
+        for country, score in zip(self.country_names, scores):
+            response += '{0}: {1}\n'.format(country, score)
+        return response
+
+    def display_capitol(self) -> List[Tuple[str, str]]:
+        """
+        Constructs a display for the scores of each country with there scores
+        """
+        scores = self.spreadsheet.get_capitol()
         response = ''
         for country, score in zip(self.country_names, scores):
             response += '{0}: {1}\n'.format(country, score)
