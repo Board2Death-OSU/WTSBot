@@ -67,5 +67,11 @@ dog_images = image_handler.ImageHandler.get_files('data/img/dog')
 dog_handler = image_handler.ImageHandler(dog_images, "dog", "off-topic")
 client.register_on_message_send_file_callback(dog_handler.get_call_back(), [])
 
+penguin_images = image_handler.ImageHandler.get_files('data/img/penguin')
+penguin_handler = image_handler.ImageHandler(
+    penguin_images, "penguin", "off-topic")
+client.register_on_message_send_file_callback(
+    penguin_handler.get_call_back(), [])
+
 # Start Client
 client.run(keys['discord_token'])
