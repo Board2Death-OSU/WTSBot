@@ -9,6 +9,8 @@ import utl.prkeeper as prkeeper
 import signal
 import sys
 
+fun = True  # Controls whether or not the image handling processes are run
+
 
 def score_callback(msg, keeper):
     """
@@ -58,20 +60,28 @@ keeper = prkeeper.get_inst(sheet)
 # Register Score Keeping Callback
 client.register_on_message_callback(score_callback, [keeper])
 
+# Add Cat Image Handler
 cat_images = image_handler.ImageHandler.get_files('data/img/cat')
 cat_handler = image_handler.ImageHandler(
     cat_images, "cat", "off-topic")
-client.register_on_message_send_file_callback(cat_handler.get_call_back(), [])
+if fun:
+    client.register_on_message_send_file_callback(
+        cat_handler.get_call_back(), [])
 
+# Add Dog Image Handler
 dog_images = image_handler.ImageHandler.get_files('data/img/dog')
 dog_handler = image_handler.ImageHandler(dog_images, "dog", "off-topic")
-client.register_on_message_send_file_callback(dog_handler.get_call_back(), [])
+if fun:
+    client.register_on_message_send_file_callback(
+        dog_handler.get_call_back(), [])
 
+# Add Penguin Image Handler
 penguin_images = image_handler.ImageHandler.get_files('data/img/penguin')
 penguin_handler = image_handler.ImageHandler(
     penguin_images, "penguin", "off-topic")
-client.register_on_message_send_file_callback(
-    penguin_handler.get_call_back(), [])
+if fun:
+    client.register_on_message_send_file_callback(
+        penguin_handler.get_call_back(), [])
 
 # Start Client
 client.run(keys['discord_token'])

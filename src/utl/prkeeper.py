@@ -60,7 +60,6 @@ class PRKeeper:
                 response += self.spreadsheet.write_entry(
                     country, score_change, author, time)
         self.spreadsheet.write_display()
-        self.write_scores()
         return response
 
     def read_scores(self) -> None:
@@ -94,7 +93,7 @@ class PRKeeper:
 
     def display_capitol(self) -> List[Tuple[str, str]]:
         """
-        Constructs a display for the scores of each country with there scores
+        Constructs a display for the capitol of each country with there capitols
         """
         scores = self.spreadsheet.get_capitol()
         response = ''
