@@ -1,12 +1,13 @@
 import json
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import re
 import utl.pr_table as pr_table
+from .pr_table import PRTable
 
 
 class PRKeeper:
 
-    def __init__(self, data_file: str, spreadsheet):
+    def __init__(self, data_file: str, spreadsheet: PRTable):
 
         # Open Data for Country Information
         data_in = open(data_file, 'r')
@@ -15,8 +16,8 @@ class PRKeeper:
 
         self.country_names: List[str] = data['country_names']
         self.countries: List[str] = data['countries']
-        self.spreadsheet = spreadsheet
-        self.scores = {}
+        self.spreadsheet: PRTable = spreadsheet
+        self.scores: Dict[str, int] = {}
         # Generate Country Regex
         reg_ex_str = '('
         for country in self.countries:
@@ -25,7 +26,7 @@ class PRKeeper:
 
         # Save Regex's
         self.country_regex = re.compile(reg_ex_str)
-        self.score_regex = re.compile('\+?-?\d+')
+        self.score_regex = re.compile(r'\+?-?\d+')
         self.read_scores()
 
     def process_score_message(self, message: str, author: str, time: str) -> str:
@@ -81,7 +82,7 @@ class PRKeeper:
             values.append(value)
         self.spreadsheet.write_column('ScoreTest', 'B', '4', '14', values)
 
-    def display_scores(self) -> List[Tuple[str, str]]:
+    def display_scores(self) -> str:
         """
         Constructs a display for the scores of each country with there scores
         """
@@ -91,7 +92,7 @@ class PRKeeper:
             response += '{0}: {1}\n'.format(country, score)
         return response
 
-    def display_capitol(self) -> List[Tuple[str, str]]:
+    def display_capitol(self) -> str:
         """
         Constructs a display for the capitol of each country with there capitols
         """

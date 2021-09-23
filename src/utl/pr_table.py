@@ -1,4 +1,4 @@
-import bot_helper.resources.spreadsheet as spreadsheet
+import lib.bot_helper.resources.spreadsheet as spreadsheet
 from typing import List, Tuple
 
 
@@ -58,10 +58,12 @@ class PRTable(spreadsheet.Spreadsheet):
         scores.sort(key=comparator, reverse=True)
 
         # Get the Top 2
-        top2 = [(scores[0][0], scores[0][1]), (scores[1][0], scores[1][1])]
+        top2 = [[scores[0][0], scores[0][1]], [scores[1][0], scores[1][1]]]
+
         # Get the Bottom
-        bottom2 = [(scores[-2][0], scores[-2][1]),
-                   (scores[-1][0], scores[-1][1])]
+        bottom2 = [[scores[-2][0], scores[-2][1]],
+                   [scores[-1][0], scores[-1][1]]]
+
         self.write_block('DisplayPR', 'A', 'B', '4', '5', top2)
         self.write_block('DisplayPR', 'A', 'B', '8', '9', bottom2)
 
@@ -85,13 +87,13 @@ class PRTable(spreadsheet.Spreadsheet):
         """
 
         time = time[11:-10]
-        hours = time[:2]
+        hours_str = time[:2]
         minutes = time[2:]
-        hours = int(hours)
+        hours = int(hours_str)
         hours -= 5
         if hours > 12:
             hours -= 12
         if hours <= 0:
             hours += 12
-        hours = str(hours)
-        return hours + minutes
+        hours_str = str(hours)
+        return hours_str + minutes
