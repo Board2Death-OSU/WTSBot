@@ -1,22 +1,23 @@
 import json
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import re
 import utl.pr_table as pr_table
+from .pr_table import PRTable
 
 
 class PRKeeper:
 
-    def __init__(self, data_file: str, spreadsheet):
+    def __init__(self, data_file: str, spreadsheet: PRTable):
 
         # Open Data for Country Information
         data_in = open(data_file, 'r')
         data: dict = json.loads(data_in.read())
         data_in.close()
 
-        self.country_names: List[str] = data['country_names']
-        self.countries: List[str] = data['countries']
-        self.spreadsheet = spreadsheet
-        self.scores = {}
+        self.country_names: List[str] = _get_country_names(data['countries'])
+        self.countries: List[str] = _get_country_acronyms(data['countries'])
+        self.spreadsheet: PRTable = spreadsheet
+
         # Generate Country Regex
         reg_ex_str = '('
         for country in self.countries:
@@ -25,8 +26,7 @@ class PRKeeper:
 
         # Save Regex's
         self.country_regex = re.compile(reg_ex_str)
-        self.score_regex = re.compile('\+?-?\d+')
-        self.read_scores()
+        self.score_regex = re.compile(r'\+?-?\d+')
 
     def process_score_message(self, message: str, author: str, time: str) -> str:
         """
@@ -43,45 +43,16 @@ class PRKeeper:
         if(match is not None):
             score_change = match.group()
 
-        def calc_score(new_score):
-            return min(max(new_score, 0), 10)
-
         # Loop over Countries marked, and make the changes
         response = ''
         if score_change is not None and len(countries) > 0:
             for country in countries:
-                if country == 'ALL':
-                    for val in self.scores.keys():
-                        self.scores[val] = calc_score(
-                            self.scores[val] + int(score_change))
-                else:
-                    self.scores[country] = calc_score(
-                        self.scores[country] + int(score_change))
                 response += self.spreadsheet.write_entry(
                     country, score_change, author, time)
         self.spreadsheet.write_display()
         return response
 
-    def read_scores(self) -> None:
-        """
-        Initializes score dictionary with the current scores in the spreadsheet
-        """
-        print('Reading scores')
-        values = self.spreadsheet.read_column('ScoreTest', 'B', '4', '14')
-        for country, value in zip(self.countries, values):
-            self.scores[country] = int(value)
-
-    def write_scores(self) -> None:
-        """
-        Saves current scores to the score table on the spreadsheet
-        """
-        print('Writing Scores')
-        values = []
-        for value in self.scores.values():
-            values.append(value)
-        self.spreadsheet.write_column('ScoreTest', 'B', '4', '14', values)
-
-    def display_scores(self) -> List[Tuple[str, str]]:
+    def display_scores(self) -> str:
         """
         Constructs a display for the scores of each country with there scores
         """
@@ -91,7 +62,7 @@ class PRKeeper:
             response += '{0}: {1}\n'.format(country, score)
         return response
 
-    def display_capitol(self) -> List[Tuple[str, str]]:
+    def display_capitol(self) -> str:
         """
         Constructs a display for the capitol of each country with there capitols
         """
@@ -104,3 +75,33 @@ class PRKeeper:
 
 def get_inst(spreadsheet):
     return PRKeeper('data/score_data.json', spreadsheet)
+
+
+def _get_country_names(data: List[Dict]) -> List[str]:
+    """get the country names from the score data
+
+    Args:
+        data (List[Dict]): the list of countries
+
+    Returns:
+        List[str]: the country names
+    """
+    country_names = []
+    for country in data:
+        country_names.append(country['country_name'])
+    return country_names
+
+
+def _get_country_acronyms(data: List[Dict]) -> List[str]:
+    """get the country acroymns from the score data
+
+    Args:
+        data (List[Dict]): the list of countries
+
+    Returns:
+        List[str]: the country acronyms
+    """
+    country_acronyms = []
+    for country in data:
+        country_acronyms.append(country['country_acronym'])
+    return country_acronyms
