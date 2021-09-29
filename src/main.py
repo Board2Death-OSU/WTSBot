@@ -18,12 +18,13 @@ def score_callback(msg, keeper):
     message = msg.content.upper()
     time = str(msg.created_at)
 
+    # Get the author, or nickname if it is provieded
     author = str(msg.author.display_name)
     if author is None:
         author = str(msg.author)
     response = ''
 
-    # Check if this is a kill command
+    # Check if this was a PR message
     if str(msg.channel) == 'human':
         if '!' not in message:
             response += keeper.process_score_message(

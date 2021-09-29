@@ -34,7 +34,7 @@ You will need to create a Discord Application the their developer portal. This c
 
 To add the bot to a given discord server, navigate to the OAuth2 section of your bot you made above, and use the OAuth2 URL Generator to generate a URL with the "bot" scope. You will need to have admin permissions in the server to do this.
 
-## Necessary Date to Run
+## Necessary Data to Run
 
 ### Secret Data
 
@@ -53,23 +53,19 @@ There is a small amount of additional data needed to run this application. This 
 
 ```json
 {
-    // The names of the countries in the game
-    "country_names":[
-        "United Kingdom",
-        "United States",
-        /*
-        ...
-        */
-    ],
-
-    // The two letter acroynm's of each country (in the same order above)
-    "countries":[
-        "UK",
-        "US",
-        /*
-        ...
-        */
-    ]
+ "countries": [
+  { "country_name": "Brazil", "country_acroynm": "BR" },
+  { "country_name": "China", "country_acroynm": "CH" },
+  { "country_name": "Egypt", "country_acroynm": "EG" },
+  { "country_name": "France", "country_acroynm": "FR" },
+  { "country_name": "Germany", "country_acroynm": "GE" },
+  { "country_name": "India", "country_acroynm": "IN" },
+  { "country_name": "Japan", "country_acroynm": "JA" },
+  { "country_name": "Russia", "country_acroynm": "RU" },
+  { "country_name": "South Africa", "country_acroynm": "SA" },
+  { "country_name": "United Kingdom", "country_acroynm": "UK" },
+  { "country_name": "United States", "country_acroynm": "US" }
+ ]
 }
 ```
 

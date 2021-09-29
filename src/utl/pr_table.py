@@ -12,19 +12,6 @@ class PRTable(spreadsheet.Spreadsheet):
         super().__init__(*kwargs)
         self.next_row = self.find_empty_cell_in_column(
             'PRLog', 'C', '3')
-        self.bad_guy_index = [
-            "RUSSIA",
-            "US",
-            "FRANCE",
-            "INDIA",
-            "JAPAN",
-            "CHINA",
-            "EGYPT",
-            "GERMANY",
-            "SOUTH AFRICA",
-            "BRAZIL",
-            "UK",
-        ]
 
     def get_countries(self) -> List[str]:
         """
@@ -49,23 +36,23 @@ class PRTable(spreadsheet.Spreadsheet):
         Writes current scores to the display page, with an x in the ones place
         """
         def comparator(x):
+            # x: (name, pr, capitol)
+            return (int(x[1]), int(x[2]), x[0])
 
-            return (x[1], x[2], self.bad_guy_index.index(x[0]))
-
-        # Sort the Scores By PR/C/BGI
+        # Sort the Scores By PR/C/Name
         scores = list(zip(self.get_countries(),
                           self.get_scores(), self.get_capitol()))
         scores.sort(key=comparator, reverse=True)
 
-        # Get the Top 2
+        # Get the Top Scores
         top2 = [[scores[0][0], scores[0][1]], [scores[1][0], scores[1][1]]]
 
-        # Get the Bottom
+        # Get the Bottom Scores
         bottom2 = [[scores[-2][0], scores[-2][1]],
                    [scores[-1][0], scores[-1][1]]]
 
-        self.write_block('DisplayPR', 'A', 'B', '4', '5', top2)
-        self.write_block('DisplayPR', 'A', 'B', '8', '9', bottom2)
+        self.write_block('DisplayPR', 'B', 'D', '4', '5', top2)
+        self.write_block('DisplayPR', 'B', 'D', '10', '11', bottom2)
 
     def write_entry(self, country, score, author, time) -> str:
         """
