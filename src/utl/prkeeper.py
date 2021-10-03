@@ -48,7 +48,11 @@ class PRKeeper:
         if score_change is not None and len(countries) > 0:
             for country in countries:
                 response += self.spreadsheet.write_entry(
-                    country, score_change, author, time)
+                    country,
+                    score_change,
+                    author,
+                    time
+                )
         self.spreadsheet.write_display()
         return response
 

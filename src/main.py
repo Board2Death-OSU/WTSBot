@@ -7,6 +7,9 @@ import utl.pr_table as pr_table
 import utl.prkeeper as prkeeper
 import sys
 
+# The discord channel name that score messages will appear in.
+CHANNEL_NAME = 'human'
+
 
 def score_callback(msg, keeper):
     """
@@ -25,7 +28,7 @@ def score_callback(msg, keeper):
     response = ''
 
     # Check if this was a PR message
-    if str(msg.channel) == 'human':
+    if str(msg.channel) == CHANNEL_NAME:
         if '!' not in message:
             response += keeper.process_score_message(
                 message, author, time)

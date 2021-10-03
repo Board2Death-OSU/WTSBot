@@ -1,6 +1,33 @@
 import lib.bot_helper.resources.spreadsheet as spreadsheet
 from typing import List, Tuple
 
+# Log Page Information
+log_info = {
+    'page': 'PRLog',
+    'first_column': 'B',
+    'last_column': 'E',
+    'first_row': '3'
+}
+
+# PR Page information
+pr_info = {
+    'page': 'CurrentPR',
+    'first_row': '2',
+    'last_row': '12',
+    'country_column': 'A',
+    'pr_column': 'B',
+    'capitol_column': 'C'
+}
+
+# Display Page Information
+display_info = {
+    'page': 'DisplayPR',
+    'first_row': "4",
+    'last_row': "10",
+    'country_column': 'B',
+    'score_column': 'C'
+}
+
 
 class PRTable(spreadsheet.Spreadsheet):
     """
@@ -8,28 +35,25 @@ class PRTable(spreadsheet.Spreadsheet):
     """
 
     def __init__(self, *kwargs):
-
         super().__init__(*kwargs)
-        self.next_row = self.find_empty_cell_in_column(
-            'PRLog', 'C', '3')
 
     def get_countries(self) -> List[str]:
         """
         Gets the list of scores in alphabetical order by country
         """
-        return self.read_column('CurrentPR', 'A', '2', '12')
+        return self.read_column(pr_info['page'], pr_info['country_column'], pr_info['first_row'], pr_info['last_row'])
 
     def get_scores(self) -> List[str]:
         """
         Gets the list of scores in alphabetical order by country
         """
-        return self.read_column('CurrentPR', 'B', '2', '12')
+        return self.read_column(pr_info['page'], pr_info['pr_column'], pr_info['first_row'], pr_info['last_row'])
 
     def get_capitol(self) -> List[str]:
         """
         Gets the list of capitol in alphabetical order by country
         """
-        return self.read_column('CurrentPR', 'C', '2', '12')
+        return self.read_column(pr_info['page'], pr_info['capitol_column'], pr_info['first_row'], pr_info['last_row'])
 
     def write_display(self) -> None:
         """
@@ -41,7 +65,10 @@ class PRTable(spreadsheet.Spreadsheet):
 
         # Sort the Scores By PR/C/Name
         scores = list(zip(self.get_countries(),
-                          self.get_scores(), self.get_capitol()))
+                          self.get_scores(),
+                          self.get_capitol()
+                          )
+                      )
         scores.sort(key=comparator, reverse=True)
 
         # Get the Top Scores
@@ -51,20 +78,43 @@ class PRTable(spreadsheet.Spreadsheet):
         bottom2 = [[scores[-2][0], scores[-2][1]],
                    [scores[-1][0], scores[-1][1]]]
 
-        self.write_block('DisplayPR', 'B', 'D', '4', '5', top2)
-        self.write_block('DisplayPR', 'B', 'D', '10', '11', bottom2)
+        self.write_block(
+            display_info['page'],
+            display_info['country_column'],
+            display_info['score_column'],
+            display_info['first_row'],
+            str(int(display_info['first_row']) + 1),
+            top2
+        )
+        self.write_block(
+            display_info['page'],
+            display_info['country_column'],
+            display_info['score_column'],
+            display_info['last_row'],
+            str(int(display_info['last_row']) + 1),
+            bottom2
+        )
 
     def write_entry(self, country, score, author, time) -> str:
         """
         Writes the associated row in the PR table for a PR change
         """
-        self.next_row = self.find_empty_cell_in_column(
-            'PRLog', 'C', '3')
+        next_row = str(self.find_empty_cell_in_column(
+            log_info['page'],
+            log_info['first_column'],
+            log_info['first_row']
+        ))
+
         time = self._convert_time(time)
         data = [time, country, score, author]
+
         self.write_row(
-            'PRLog', 'B', 'E', str(self.next_row), data)
-        self.next_row += 1
+            log_info['page'],
+            log_info['first_column'],
+            log_info['last_column'],
+            next_row,
+            data
+        )
         return '{0} gets {1} PR from {2}\n'.format(country, score, author)
 
     @staticmethod
