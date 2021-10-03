@@ -17,19 +17,19 @@ class PRTable(spreadsheet.Spreadsheet):
         """
         Gets the list of scores in alphabetical order by country
         """
-        return self.read_column('CurrentPR/C', 'A', '2', '12')
+        return self.read_column('CurrentPR', 'A', '2', '12')
 
     def get_scores(self) -> List[str]:
         """
         Gets the list of scores in alphabetical order by country
         """
-        return self.read_column('CurrentPR/C', 'B', '2', '12')
+        return self.read_column('CurrentPR', 'B', '2', '12')
 
     def get_capitol(self) -> List[str]:
         """
         Gets the list of capitol in alphabetical order by country
         """
-        return self.read_column('CurrentPR/C', 'C', '2', '12')
+        return self.read_column('CurrentPR', 'C', '2', '12')
 
     def write_display(self) -> None:
         """
