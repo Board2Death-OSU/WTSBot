@@ -16,6 +16,7 @@ class PRKeeper:
 
         self.country_names: List[str] = _get_country_names(data['countries'])
         self.countries: List[str] = _get_country_acronyms(data['countries'])
+        _check_score_data(self.country_names, self.countries)
         self.spreadsheet: PRTable = spreadsheet
 
         # Generate Country Regex
@@ -90,9 +91,11 @@ def _get_country_names(data: List[Dict]) -> List[str]:
     Returns:
         List[str]: the country names
     """
+    NAME_STRING = 'country_name'
     country_names = []
     for country in data:
-        country_names.append(country['country_name'])
+        if NAME_STRING in country.keys():
+            country_names.append(country[NAME_STRING])
     return country_names
 
 
@@ -105,7 +108,37 @@ def _get_country_acronyms(data: List[Dict]) -> List[str]:
     Returns:
         List[str]: the country acronyms
     """
+    ACRONYM_STRING = 'country_acronym'
     country_acronyms = []
     for country in data:
-        country_acronyms.append(country['country_acronym'])
+        if ACRONYM_STRING in country.keys():
+            country_acronyms.append(country[ACRONYM_STRING])
     return country_acronyms
+
+
+def _check_score_data(country_names: List[str], country_acronyms: List[str]) -> bool:
+    """verify the country and score data to make sure they are valid
+
+    Args:
+        country_names ([type]): [description]
+        country_acronyms ([type]): [description]
+
+    Returns:
+        bool: True if the score data lists are valid
+    """
+
+    # Verify the length
+    result = len(country_names) == len(country_acronyms)
+
+    if not result:
+        raise ValueError('Country names and acroynms lenght do not match')
+
+    # Check that each of the first letters are the same
+    for name, acronym in zip(country_names, country_acronyms):
+        result = result and name[0] == acronym[0]
+        if not result:
+            raise ValueError(
+                'Country Names and Acronyms do not match for {name} and {acronym}'
+            )
+
+    return result

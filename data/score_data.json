@@ -1,0 +1,15 @@
+{
+	"countries": [
+		{ "country_name": "Brazil", "country_acronym": "BR" },
+		{ "country_name": "China", "country_acronym": "CH" },
+		{ "country_name": "Egypt", "country_acronym": "EG" },
+		{ "country_name": "France", "country_acronym": "FR" },
+		{ "country_name": "Germany", "country_acronym": "GE" },
+		{ "country_name": "India", "country_acronym": "IN" },
+		{ "country_name": "Japan", "country_acronym": "JA" },
+		{ "country_name": "Russia", "country_acronym": "RU" },
+		{ "country_name": "South Africa", "country_acronym": "SA" },
+		{ "country_name": "United Kingdom", "country_acronym": "UK" },
+		{ "country_name": "United States", "country_acronym": "US" }
+	]
+}
